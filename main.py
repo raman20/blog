@@ -4,14 +4,14 @@ import motor.motor_tornado as motor
 import bcrypt
 import tornado.escape
 
-db = motor.MotorClient("mongodb://localhost:27017")
 
 class app(Application):
     def __init__(self,db):
         route = [
             url("/",home,name="home"),
             url("/login",login,name="login"),
-            url("/register",register,name="register")
+            url("/register",register,name="register"),
+            url("/feed",feed,name="feed")
         ]
         settings = dict(
             template_path = "photon/template",
@@ -70,7 +70,7 @@ class login(RequestHandler):
             hashed_password = tornado.escape.to_unicode(hashed_password)
             if hashed_password == user["password"]:
                 self.set_secure_cookie("blog_user",str(user["_id"]))
-                self.redirect("")
+                self.redirect("/feed")
         
         else:
             self.render("login.html",error="Wrong username or password")
@@ -103,5 +103,6 @@ class create(RequestHandler):
     pass
 
 async def main():
+    db = motor.MotorClient("mongodb://localhost:27017")
     app = Application(db)
     app.listen(8888)
