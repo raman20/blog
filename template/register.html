@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>REGISTER</h1><br>
+    <form action="/register" method="POST">
+        <label for="name">NAME</label>
+        <input type="text" name="name" id="name">
+        <label for="username">USERNAME</label>
+        <input type="text" name="username" id="username">
+        <label for="passwd">PASSWORD</label>
+        <input type="password" name="passwd" id="passwd">
+        <input type="submit" value="register">
+    </form>
+    <br>
+    {% if error %}
+        <p>{{error}}</p>
+    {% end %}
+</body>
+</html>
