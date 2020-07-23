@@ -4,23 +4,7 @@ import motor.motor_tornado as motor
 import bcrypt
 import tornado.escape
 
-
-class app(Application):
-    def __init__(self,db):
-        route = [
-            url("/",home,name="home"),
-            url("/login",login,name="login"),
-            url("/register",register,name="register"),
-            url("/feed",feed,name="feed")
-        ]
-        settings = dict(
-            template_path = "photon/template",
-            cookie_secret="edugorilla is a good company",
-            login_url = "/login",
-            debug=True,
-            db = db
-        )
-        super(app, self).__init__(route,**settings)
+db = motor.MotorClient("mongodb://localhost:27017/")
 
 class home(RequestHandler):
     def get(self):
@@ -28,13 +12,13 @@ class home(RequestHandler):
 
 class register(RequestHandler):
     def get(self):
-        self.render("register.html")
+        self.render("register.html",error=None)
 
     async def post(self):
-        db = self.settings["db"]
         user = db["photon"]["user"]
-        id = user.count()+1
-        name = self.get_body_argument("name")
+        id = user.estimated_document_count()
+        fname = self.get_body_argument("fname")
+        lname = self.get_body_argument("lname")
         username = self.get_body_argument("username")
         password = await tornado.ioloop.IOLoop.current().run_in_executor(
             None,
@@ -44,7 +28,7 @@ class register(RequestHandler):
         )
         n = await user.find_one({"username":username})
         if not n:
-            await user.insert_one({"_id":id,"name":name,"username":username,"password":password})
+            await user.insert_one({"_id":id.result()+1,"fname":fname,"lname":lname,"username":username,"password":password,"pid":[]})
             self.set_secure_cookie("blog_user",str(id))
             self.redirect("/login")
         else:
@@ -52,15 +36,14 @@ class register(RequestHandler):
 
 class login(RequestHandler):
     def get(self):
-        self.render("login.html")
+        self.render("login.html",error=None)
 
     async def post(self):
-        db = self.settings["db"]
         user = db["photon"]["user"]
         username = self.get_body_argument("username")
         user = await user.find_one({"username":username})
-        if username == user["username"]:
-            password = self.get_body_argument("password")
+        if user :
+            password = self.get_body_argument("passwd")
             hashed_password = await tornado.ioloop.IOLoop.current().run_in_executor(
                 None,
                 bcrypt.hashpw,
@@ -102,7 +85,16 @@ class like_dislike(RequestHandler):
 class create(RequestHandler):
     pass
 
-async def main():
-    db = motor.MotorClient("mongodb://localhost:27017")
-    app = Application(db)
+
+if __name__ == "__main__":
+    app = Application([
+            ("/",home),
+            ("/login",login),
+            ("/register",register),
+            ("/feed",feed)
+        ],template_path = "template",
+            cookie_secret="edugorilla is a good company",
+            login_url = "/login",
+            debug=True)
     app.listen(8888)
+    tornado.ioloop.IOLoop.current().start()
