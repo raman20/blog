@@ -1,26 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>REGISTER</h1><br>
-    <form action="/register" method="POST">
-        <label for="fname">FIRST NAME</label>
-        <input type="text" name="fname" id="fname">
-        <label for="fname">LAST NAME</label>
-        <input type="text" name="lname" id="lname">
-        <label for="username">USERNAME</label>
-        <input type="text" name="username" id="username">
-        <label for="passwd">PASSWORD</label>
-        <input type="password" name="passwd" id="passwd">
-        <input type="submit" value="register">
-    </form>
-    <br>
-    {% if error %}
-        <p>{{error}}</p>
-    {% end %}
+    <title>REGISTER</title>
+    <style>
+      form{
+        margin: 0 auto;
+        width: 400px;
+        border: 1px solid #CCC;
+        padding: 1em;
+        border-radius:1em;
+      }
+      
+      ul{
+        list-style: none;
+        padding:0;
+        margin:0;
+      }
+      
+      form li+li{
+        margin-top: 1em;
+      }
+      
+      label{
+        display: inline-block; 
+        width: 90px;
+        text-align: right;
+      }
+      
+      input{
+        font: 1em sans-serif;
+        width: 300px;
+        box-sizing: border-box;
+        border: 1px solid #999;
+      }
+      
+      input:focus{
+        border-color: #000;
+      }
+      
+      
+      .button{
+        padding-left: 90px;
+      }
+      
+      button{
+        margin-left: .5em;
+      }
+    
+    </style>
+  </head>
+  <body>
+    <form action="/register" method="post">
+     <ul>
+         <li>REGISTER</li>
+      <li>
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname" minlength="1" maxlength="5" required>
+      </li>
+      <li>
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname" minlength="1" maxlength="5">
+      </li>
+      <li>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" minlength="5" maxlength="15" required>
+      </li>
+      <li>
+        <label for="passwd">Password</label>
+        <input type="password" id="passwd" name="passwd" minlength="5" maxlength="15" required>
+      </li>
+      <li class='button'>
+        <button type='submit'>Register</button>
+      </li>
+  </ul>
+</form>
+{% if error %}
+<p>{{error}}</p>
+{% end %}
 </body>
 </html>

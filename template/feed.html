@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!--------------------------------------nav---------------------------------->
+            <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-light">
+                <a href="#" class="navbar-brand">BLOG</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                  <ul class="navbar-nav ml-auto">
+                        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                          <a class="nav-link" href="/feed">HOME</a>
+                        </li>
+                        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                             <a class="nav-link" href="/user">PROFILE</a>
+                       </li>
+                        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                          <a class="nav-link" href="/logout">LOGOUT</a>
+                        </li>
+                  </ul>
+                </div>
+          </div>
+          <!--------------------------------------feed------------------------------------>
+          <div class="w-100"></div>
+          <div class="col-sm-12 text-center">
+              <h3>TRENDING POST</h3>
+            {% if trend_post %}
+                {% for i in trend_post %}
+                    <a href="/get_post/{{i['_id']}}">
+                        <div class="card" style="width: 18rem;">
+                            {% if i["file"] %}
+                            <img src="../static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
+                            {% end %}
+                            <div class="card-body">
+                              <p class="card-text">{{i["blog"]}}</p>
+                              <form action="/like/{{i['_id']}}" method="POST"><button type="submit">Like {{sum(i["like"])}}</button></form>
+                              <form action="/dislike/{{i['_id']}}" method="POST"><button type="submit">Dislike {{sum(i["dislike"])}}</button></form>
+                              <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{sum(i["comment"])}}</span></a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
+                              </div>
+                          </div>
+                    </a>
+                {% end %}
+            {% else %}
+                <p>No Trending Post Available</p>
+            {% end %}
+        </div>
+        <!--------normal post--------------->
+        <div class="w-100"></div>
+          <div class="col-sm-12 text-center">
+              <h3>TRENDING POST</h3>
+            {% if normal_post %}
+                {% for i in normal_post %}
+                    <a href="/get_post/{{i['_id']}}">
+                        <div class="card" style="width: 18rem;">
+                            {% if i["file"] %}
+                            <img src="../static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
+                            {% end %}
+                            <div class="card-body">
+                              <p class="card-text">{{i["blog"]}}</p>
+                              <form action="/like/{{i['_id']}}" method="POST"><button type="submit">Like {{sum(i["like"])}}</button></form>
+                              <form action="/dislike/{{i['_id']}}" method="POST"><button type="submit">Dislike {{sum(i["dislike"])}}</button></form>
+                              <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{sum(i["comment"])}}</span></a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
+                              </div>
+                          </div>
+                    </a>
+                {% end %}
+            {% else %}
+                <p>No Post Available</p>
+            {% end %}
+        </div>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    
+    <style>
+        form{
+          margin: 0 auto;
+          width: 400px;
+          border: 1px solid #CCC;
+          padding: 1em;
+          border-radius:1em;
+        }
+        
+        ul{
+          list-style: none;
+          padding:0;
+          margin:0;
+        }
+        
+        form li+li{
+          margin-top: 1em;
+        }
+        
+        label{
+          display: inline-block; 
+          width: 90px;
+          text-align: right;
+        }
+        
+        input,textarea{
+          font: 1em sans-serif;
+          width: 300px;
+          box-sizing: border-box;
+          border: 1px solid #999;
+        }
+        
+        input:focus,textarea:focus{
+          border-color: #000;
+        }
+        
+        textarea{
+          vertical-align: top;
+          height: 5em;
+        }
+        
+        .button{
+          padding-left: 90px;
+        }
+        
+        button{
+          margin-left: .5em;
+        }
+      
+      </style>
+    </head>
+    <body>
+      <form method="post" enctype="multipart/form-data">
+       <ul>
+        <li>NEW POST</li>   
+        <li>
+          <label for="blog">Blog</label>
+          <textarea id="blog" name="blog" required></textarea>
+        </li>
+        <li>
+            <label for="file">Choose Photo</label>
+            <input type="file" name="file" id='file' accept=".jpg,.png,.jpeg">
+         </li>
+        <li class='button'>
+          <button type='submit'>create post</button>
+        </li>
+    </ul>
+  </form>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    
+    <style>
+        #cmnt_list{height:200px; width:18%;}
+        #cmnt_list{overflow:hidden; overflow-y:scroll;}
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!--------------------------------------nav---------------------------------->
+            <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-light">
+                <a href="#" class="navbar-brand">BLOG</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                  <ul class="navbar-nav ml-auto">
+                        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                          <a class="nav-link" href="/feed">HOME</a>
+                        </li>
+                        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                             <a class="nav-link" href="/user">PROFILE</a>
+                       </li>
+                        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                          <a class="nav-link" href="/logout">LOGOUT</a>
+                        </li>
+                  </ul>
+                </div>
+          </div>
+          <!-----------------------------------------------post-------------------------------------------->
+          <div class="w-100"></div>
+          <div class="col-sm-12">
+            <div class="card" style="width: 30rem;">
+                <div class="card-header text-muted">
+                    By @{{post_info["uid"]}}       on {{post_info["day"]}}/{{post_info["month"]}}/{{post_info["year"]}}
+                  </div>
+                <img src="../static/{{post_info['file']}}" class="card-img-top">
+                <div class="card-body">
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  
+                  <a class="btn btn-success btn-sm">like <span>{{sum(post_info["like"])}}</span></a>
+                  
+                  <a class="btn btn-danger btn-sm">dislike <span>{{sum(post_info["dislike"])}}</span></a>
+                  <form action="/comment/{{post_info['_id']}}" onsubmit="comment()"><input type="text" name="uid" value="{{user}} hidden"><input type="text" name="cmnt"><button type="submit"></button></form>
+                  
+                  {% if post_info["uid"]==user  %}
+                  <a href="/edit_post/{{post_info['id']}}">Edit Post</a>
+                  {% end %}
+                </div>
+              </div>
+              <div class="card text-center" style="width: 20rem;">
+                <div class="card-body">
+                    {% if post_info["comment"] %}
+                        <ul id="cmnt-list">
+                        {% for i,j in zip(post_info["comment"],post_info["c_uid"]) %}
+                            <li>@{{j}} :-> {{i}}</li>
+                        {% end %}
+                        </ul>
+                    {% else %}
+                        No comments
+                    {% end %}
+                </div>
+              </div>
+          </div>
+
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        function comment(){
+            var ul = document.getElementById("cmnt-list");
+            var cmnt = document.getElementsByName("cmnt").value;
+            var uid = document.getElementsByName("uid").value;
+            var li = document.createElement("li")
+            li.appendChild(document.createTextNode("@"+uid+" :-> "+cmnt))
+            ul.appendChild(li)
+        }
+    </script>
+</body>
+</html>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN</title>
+    <title>Edit Profile</title>
+
     <style>
       form{
         margin: 0 auto;
@@ -48,25 +49,20 @@
       button{
         margin-left: .5em;
       }
-    
     </style>
-  </head>
-  <body>
-    <form action="/login" method="post">
-     <ul>
-         <li>Login</li>
-      <li>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-      </li>
-      <li>
-        <label for="passwd">Password</label>
-        <input type="password" id="passwd" name="passwd" required>
-      </li>
-      <li class='button'>
-        <button type='submit'>Login</button>
-      </li>
-  </ul>
-</form>
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data">
+        <ul>
+            <li>Change Photo</li>
+         <li>
+            <label for="file">Choose Photo</label>
+            <input type="file" name="img" id='file' accept=".jpg,.png,.jpeg">
+         </li>
+         <li class='button'>
+           <button type='submit'>upload</button>
+         </li>
+     </ul>
+   </form>
 </body>
 </html>
