@@ -45,7 +45,9 @@
                 <div class="card-header text-muted">
                     By @{{post["uid"]}}       on {{post["day"]}}/{{post["month"]}}/{{post["year"]}}
                   </div>
+                {% if post["file"] %}
                 <img src="/static/{{post['file']}}" class="card-img-top">
+                {% end %}
                 <div class="card-body">
                   <p class="card-text">{{post["blog"]}}</p>
                   

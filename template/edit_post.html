@@ -67,10 +67,12 @@
              <label for="file">Choose new Photo</label>
              <input type="file" name="file" id='file' accept=".jpg,.png,.jpeg">
           </li>
+          {% if p["file"] %}
           <li>
             <label for="del_img">Delete pic</label>
             <input type="checkbox" name="del_img" id='del_img' value="true">
          </li>
+         {% end %}
          <li class='button'>
            <button type='submit'>create post</button>
          </li>

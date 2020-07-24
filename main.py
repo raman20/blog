@@ -1,8 +1,6 @@
 from tornado.web import RequestHandler,Application,StaticFileHandler,url
 import tornado.ioloop
 import motor.motor_tornado as motor
-import bcrypt
-import tornado.escape
 import os
 import datetime
 
@@ -202,7 +200,7 @@ class edit_post(RequestHandler):
             post = db["web"]["post"]
             p = await post.find_one({"_id":int(pid)})
             blog = p["blog"]
-            self.render("edit_post.html",blog=blog,pid=pid)
+            self.render("edit_post.html",blog=blog,pid=pid,p=p)
         else:
             self.redirect("/login")
         
@@ -214,10 +212,13 @@ class edit_post(RequestHandler):
             file_name = pinfo["file"]
             blog = self.get_body_argument("blog")
             files = self.request.files.get("img")
-            if self.get_body_argument("del_img"):
+            try:
                 del_img = self.get_body_argument("del_img")
+            except:
+                del_img = None
             if files:
                 for f in files:
+                    file_name = pinfo["uid"]+str(pid)+"."+f.filename.split['.'][-1]
                     fh = open(f"static/{file_name}","wb")
                     fh.write(f.body)
                     fh.close()
@@ -236,7 +237,10 @@ class delete_post(RequestHandler):
             post = db["web"]["post"]
             user = db["web"]["user"]
             p_info = await post.find_one({"_id":int(pid)})
-            os.remove(f"static/{p_info['file']}")
+            for _,_,files in os.walk("static"):
+                pass
+            if p_info['file'] in files:
+                os.remove(f"static/{p_info['file']}")
             await post.delete_one({"_id":int(pid)})
             await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[pid]}}})
             await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[0]}}})
