@@ -211,17 +211,18 @@ class edit_post(RequestHandler):
             pinfo = await post.find_one({"_id":pid})
             file_name = pinfo["file"]
             blog = self.get_body_argument("blog")
-            files = self.request.files.get("img")
+            files = self.request.files.get("file")
             try:
                 del_img = self.get_body_argument("del_img")
             except:
                 del_img = None
             if files:
                 for f in files:
-                    file_name = pinfo["uid"]+str(pid)+"."+f.filename.split['.'][-1]
+                    file_name = pinfo["uid"]+str(pid)+"."+f.filename.split('.')[-1]
                     fh = open(f"static/{file_name}","wb")
                     fh.write(f.body)
                     fh.close()
+                    await post.update_one({"_id":int(pid)},{"$set":{"file":file_name}})
             elif del_img:
                 os.remove(f"static/{file_name}")
                 await post.update_one({"_id":int(pid)},{"$set":{"file":""}})
@@ -242,7 +243,7 @@ class delete_post(RequestHandler):
             if p_info['file'] in files:
                 os.remove(f"static/{p_info['file']}")
             await post.delete_one({"_id":int(pid)})
-            await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[pid]}}})
+            await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[int(pid)]}}})
             await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[0]}}})
             self.redirect("/user")
         else:
