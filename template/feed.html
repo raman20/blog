@@ -41,7 +41,7 @@
                     <a href="/get_post/{{i['_id']}}">
                         <div class="card" style="width: 18rem;">
                             {% if i["file"] %}
-                            <img src="../static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
+                            <img src="static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
                             {% end %}
                             <div class="card-body">
                               <p class="card-text">{{i["blog"]}}</p>
@@ -62,13 +62,13 @@
         <!--------normal post--------------->
         <div class="w-100"></div>
           <div class="col-sm-12 text-center">
-              <h3>TRENDING POST</h3>
+              <h3>POST</h3>
             {% if normal_post %}
                 {% for i in normal_post %}
                     <a href="/get_post/{{i['_id']}}">
                         <div class="card" style="width: 18rem;">
                             {% if i["file"] %}
-                            <img src="../static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
+                            <img src="static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
                             {% end %}
                             <div class="card-body">
                               <p class="card-text">{{i["blog"]}}</p>

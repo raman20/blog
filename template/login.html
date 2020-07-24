@@ -66,7 +66,10 @@
       <li class='button'>
         <button type='submit'>Login</button>
       </li>
-  </ul>
+    </ul>
 </form>
+{% if error %}
+<p>{{error}}</p>
+{% end %}
 </body>
 </html>

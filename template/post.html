@@ -43,27 +43,27 @@
           <div class="col-sm-12">
             <div class="card" style="width: 30rem;">
                 <div class="card-header text-muted">
-                    By @{{post_info["uid"]}}       on {{post_info["day"]}}/{{post_info["month"]}}/{{post_info["year"]}}
+                    By @{{post["uid"]}}       on {{post["day"]}}/{{post["month"]}}/{{post["year"]}}
                   </div>
-                <img src="../static/{{post_info['file']}}" class="card-img-top">
+                <img src="static/{{post['file']}}" class="card-img-top">
                 <div class="card-body">
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <p class="card-text">{{post["blog"]}}</p>
                   
-                  <a class="btn btn-success btn-sm">like <span>{{sum(post_info["like"])}}</span></a>
+                  <a class="btn btn-success btn-sm">like <span>{{sum(post["like"])}}</span></a>
                   
-                  <a class="btn btn-danger btn-sm">dislike <span>{{sum(post_info["dislike"])}}</span></a>
-                  <form action="/comment/{{post_info['_id']}}" onsubmit="comment()"><input type="text" name="uid" value="{{user}} hidden"><input type="text" name="cmnt"><button type="submit"></button></form>
+                  <a class="btn btn-danger btn-sm">dislike <span>{{sum(post["dislike"])}}</span></a>
+                  <form action="/comment/{{post['_id']}}" method="POST" onsubmit="comment()"><input type="text" name="uid" value="{{user}}" hidden><input type="text" name="cmnt"><button type="submit">comnt</button></form>
                   
-                  {% if post_info["uid"]==user  %}
-                  <a href="/edit_post/{{post_info['id']}}">Edit Post</a>
+                  {% if post["uid"]==user  %}
+                  <a href="/edit_post/{{post['_id']}}">Edit Post</a>
                   {% end %}
                 </div>
               </div>
               <div class="card text-center" style="width: 20rem;">
                 <div class="card-body">
-                    {% if post_info["comment"] %}
+                    {% if post["comment"] %}
                         <ul id="cmnt-list">
-                        {% for i,j in zip(post_info["comment"],post_info["c_uid"]) %}
+                        {% for i,j in zip(post["comment"],post["c_uid"]) %}
                             <li>@{{j}} :-> {{i}}</li>
                         {% end %}
                         </ul>

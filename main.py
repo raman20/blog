@@ -22,7 +22,7 @@ class register(RequestHandler):
 
     async def post(self):
         user = db["web"]["user"]
-        id = user.estimated_document_count()
+        uid = await user.estimated_document_count()
         fname = self.get_body_argument("fname")
         lname = self.get_body_argument("lname")
         username = self.get_body_argument("username")
@@ -30,7 +30,7 @@ class register(RequestHandler):
         n = await user.find_one({"username":username})
         if not n:
             await user.insert_one({
-                "_id":id.result()+1,
+                "_id":uid+1,
                 "fname":fname,
                 "lname":lname,
                 "username":username,
@@ -74,9 +74,11 @@ class user(RequestHandler):
             req_post = list()
             user_info = await user.find_one({"_id":user_id})
             pid = user_info["pid"]
-            for i in pid:
-                req_post.append(await post.find_one({"_id":i}))
-            self.render("user.html",user=user,post=req_post)
+            if pid[0]:
+                for i in pid:
+                    req_post.append(await post.find_one({"_id":i}))
+                    self.render("user.html",user=user_info,post=req_post)
+            self.render("user.html",user=user_info,post=None)
         else:
             self.redirect("/login")
 
@@ -116,8 +118,8 @@ class feed(RequestHandler):
             trend_post = list()
             normal_post = list()
             post = db["web"]["post"]
-            post_info = await post.find()
-            for i in post_info:
+            post_info = post.find()
+            for i in await post_info.to_list(length=100000):
                 if i["day"]==day and i["month"]==month and i["year"]==year:
                     if sum(i["like"])+sum(i["dislike"])+sum(i["comment"]):
                         trend_post.append(i)
@@ -146,17 +148,17 @@ class create_post(RequestHandler):
             user_detail = await user.find_one({"_id":user_id})
             pid = await post.estimated_document_count()
             blog = self.get_argument("blog")
-            files = self.request.files.get("img")
+            files = self.request.files.get("file")
             if files:
                 for f in files:
-                    f.filename = user_detail["username"]+pid+'.'+f.filename.split(".")[-1]
-                    fh = open(f"static/{f.filename}","wb")
+                    filename = user_detail["username"]+str(pid+1)+'.'+f.filename.split(".")[-1]
+                    fh = open(f"static/{filename}","wb")
                     fh.write(f.body)
                     fh.close()
                 await post.insert_one({
                     "_id":pid,
                     "uid":user_detail["username"],
-                    "file":f.filename,
+                    "file":filename,
                     "blog":blog,
                     "like":[],
                     "dislike":[],
@@ -205,7 +207,8 @@ class edit_post(RequestHandler):
     async def post(self,pid):
         if self.get_secure_cookie("blog_user"):
             post = db["web"]["post"]
-            pinfo = await post.find_one({"_id":int(pid)})
+            pid = int(pid)
+            pinfo = await post.find_one({"_id":pid})
             file_name = pinfo["file"]
             blog = self.get_argument("blog")
             files = self.request.files.get("img")
@@ -242,7 +245,7 @@ class get_post(RequestHandler):
             post = db["web"]["post"]
             user = db["web"]["user"]
             user_info = await user.find_one({"_id":int(self.get_secure_cookie("blog_user"))})
-            post_info = await post.find_one({"_id":id})
+            post_info = await post.find_one({"_id":int(pid)})
             self.render("post.html",post=post_info,user=user_info["username"]) 
         else:
             self.redirect("/login")
@@ -303,7 +306,8 @@ if __name__ == "__main__":
             (r"/comment/(.*)",add_comment),
             (r"/logout",logout)
         ],template_path = "template",
-        cookie_secret="edugorilla is a good company",
+        cookie_secret="123123123123123",
+        static_path="static",
         debug=True)
     app.listen(8888)
     tornado.ioloop.IOLoop.current().start()
