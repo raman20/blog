@@ -21,7 +21,7 @@
     <div class="container-fluid">
         <div class="row">
     <!--------------------------navbar------------------->
-    <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-light">
+    <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
         <a href="#" class="navbar-brand">BLOG</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -65,18 +65,18 @@
                     {% for i in post %}
                         <a href="/get_post/{{i['_id']}}">
                             <div class="card" style="width: 18rem;">
+                                <div class="card-header text-muted">
+                                    on {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
+                                  </div>
                                 {% if i["file"] %}
                                 <img src="static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
                                 {% end %}
                                 <div class="card-body">
                                   <p class="card-text">{{i["blog"]}}</p>
-                                  <a class="btn btn-success btn-sm text-muted">Like <span>{{sum(i["like"])}}</span></a>
-                                  <a class="btn btn-danger btn-sm text-muted">Dislike <span>{{sum(i["dislike"])}}</span></a>
-                                  <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{sum(i["comment"])}}</span></a>
+                                  <a class="btn btn-success btn-sm">Like <span>{{sum(i["like"])}}</span></a>
+                                  <a class="btn btn-danger btn-sm">Dislike <span>{{sum(i["dislike"])}}</span></a>
+                                  <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{len(i["comment"])}}</span></a>
                                 </div>
-                                <div class="card-footer text-muted">
-                                    {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
-                                  </div>
                               </div>
                         </a>
                     {% end %}

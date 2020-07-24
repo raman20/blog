@@ -13,7 +13,7 @@
     <div class="container-fluid">
         <div class="row">
             <!--------------------------------------nav---------------------------------->
-            <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-light">
+            <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
                 <a href="#" class="navbar-brand">BLOG</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
@@ -40,6 +40,9 @@
                 {% for i in trend_post %}
                     <a href="/get_post/{{i['_id']}}">
                         <div class="card" style="width: 18rem;">
+                          <div class="card-header text-muted">
+                            By @{{i["uid"]}}       on {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
+                          </div>
                             {% if i["file"] %}
                             <img src="static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
                             {% end %}
@@ -47,11 +50,8 @@
                               <p class="card-text">{{i["blog"]}}</p>
                               <form action="/like/{{i['_id']}}" method="POST"><button type="submit">Like {{sum(i["like"])}}</button></form>
                               <form action="/dislike/{{i['_id']}}" method="POST"><button type="submit">Dislike {{sum(i["dislike"])}}</button></form>
-                              <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{sum(i["comment"])}}</span></a>
+                              <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{len(i["comment"])}}</span></a>
                             </div>
-                            <div class="card-footer text-muted">
-                                {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
-                              </div>
                           </div>
                     </a>
                 {% end %}
@@ -66,7 +66,10 @@
             {% if normal_post %}
                 {% for i in normal_post %}
                     <a href="/get_post/{{i['_id']}}">
-                        <div class="card" style="width: 18rem;">
+                        <div class="card" style="width: 18rem;" id="{{i['_id']}}">
+                          <div class="card-header text-muted">
+                            By @{{i["uid"]}}       on {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
+                          </div>
                             {% if i["file"] %}
                             <img src="static/{{i['file']}}" class="card-img-top img-fluid" alt="...">
                             {% end %}
@@ -76,9 +79,6 @@
                               <form action="/dislike/{{i['_id']}}" method="POST"><button type="submit">Dislike {{sum(i["dislike"])}}</button></form>
                               <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{sum(i["comment"])}}</span></a>
                             </div>
-                            <div class="card-footer text-muted">
-                                {{i["day"]}}/{{i["month"]}}/{{i["year"]}}
-                              </div>
                           </div>
                     </a>
                 {% end %}

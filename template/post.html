@@ -19,7 +19,7 @@
     <div class="container-fluid">
         <div class="row">
             <!--------------------------------------nav---------------------------------->
-            <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-light">
+            <div class="col-sm-12 navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
                 <a href="#" class="navbar-brand">BLOG</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
@@ -45,21 +45,18 @@
                 <div class="card-header text-muted">
                     By @{{post["uid"]}}       on {{post["day"]}}/{{post["month"]}}/{{post["year"]}}
                   </div>
-                <img src="static/{{post['file']}}" class="card-img-top">
+                <img src="/static/{{post['file']}}" class="card-img-top">
                 <div class="card-body">
                   <p class="card-text">{{post["blog"]}}</p>
                   
-                  <a class="btn btn-success btn-sm">like <span>{{sum(post["like"])}}</span></a>
-                  
-                  <a class="btn btn-danger btn-sm">dislike <span>{{sum(post["dislike"])}}</span></a>
                   <form action="/comment/{{post['_id']}}" method="POST" onsubmit="comment()"><input type="text" name="uid" value="{{user}}" hidden><input type="text" name="cmnt"><button type="submit">comnt</button></form>
                   
                   {% if post["uid"]==user  %}
                   <a href="/edit_post/{{post['_id']}}">Edit Post</a>
                   {% end %}
                 </div>
-              </div>
-              <div class="card text-center" style="width: 20rem;">
+              
+              <div class="card text-center" style="width: 30rem;">
                 <div class="card-body">
                     {% if post["comment"] %}
                         <ul id="cmnt-list">
@@ -72,6 +69,7 @@
                     {% end %}
                 </div>
               </div>
+            </div>
           </div>
 
 

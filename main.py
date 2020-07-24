@@ -55,6 +55,8 @@ class login(RequestHandler):
             if self.get_body_argument("passwd") == user["password"]:
                 self.set_secure_cookie("blog_user",str(user["_id"]))
                 self.redirect("/user")
+            else:
+                self.render("login.html",error="Wrong username or password")
         
         else:
             self.render("login.html",error="Wrong username or password")
@@ -74,7 +76,7 @@ class user(RequestHandler):
             req_post = list()
             user_info = await user.find_one({"_id":user_id})
             pid = user_info["pid"]
-            if pid[0]:
+            if pid:
                 for i in pid:
                     req_post.append(await post.find_one({"_id":i}))
                     self.render("user.html",user=user_info,post=req_post)
@@ -121,13 +123,13 @@ class feed(RequestHandler):
             post_info = post.find()
             for i in await post_info.to_list(length=100000):
                 if i["day"]==day and i["month"]==month and i["year"]==year:
-                    if sum(i["like"])+sum(i["dislike"])+sum(i["comment"]):
+                    if sum(i["like"])+sum(i["dislike"])+len(i["comment"]):
                         trend_post.append(i)
                     else:
                         normal_post.append(i)
                 else:
                     normal_post.append(i)
-            sorted(trend_post,key=lambda i: sum(i["like"])+sum(i["dislike"])+sum(i["comment"]),reverse=True)
+            sorted(trend_post,key=lambda i: sum(i["like"])+sum(i["dislike"])+len(i["comment"]),reverse=True)
             normal_post.reverse()
             self.render("feed.html",trend_post=trend_post,normal_post=normal_post)
         else:
@@ -212,7 +214,8 @@ class edit_post(RequestHandler):
             file_name = pinfo["file"]
             blog = self.get_argument("blog")
             files = self.request.files.get("img")
-            del_img = self.get_argument("del_img")
+            if self.get_argument("del_img"):
+                del_img = self.get_argument("del_img")
             if files:
                 for f in files:
                     fh = open(f"static/{file_name}","wb")
@@ -220,7 +223,7 @@ class edit_post(RequestHandler):
                     fh.close()
             elif del_img:
                 os.remove(f"static/{file_name}")
-                await post.update_one({"_id":int(pid)},{"$set":{"filename":""}})
+                await post.update_one({"_id":int(pid)},{"$set":{"file":""}})
 
             await post.update_one({"_id":int(pid)},{"$set":{"blog":blog}})
             self.redirect("/user")
@@ -232,8 +235,11 @@ class delete_post(RequestHandler):
         if self.get_secure_cookie("blog_user"):
             post = db["web"]["post"]
             user = db["web"]["user"]
+            p_info = await post.find_one({"_id":int(pid)})
+            os.remove(f"static/{p_info['file']}")
             await post.delete_one({"_id":int(pid)})
             await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[pid]}}})
+            await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[0]}}})
             self.redirect("/user")
         else:
             self.redirect("/login")
@@ -244,21 +250,23 @@ class get_post(RequestHandler):
         if self.get_secure_cookie("blog_user"):
             post = db["web"]["post"]
             user = db["web"]["user"]
+            pid = int(pid)
             user_info = await user.find_one({"_id":int(self.get_secure_cookie("blog_user"))})
-            post_info = await post.find_one({"_id":int(pid)})
+            post_info = await post.find_one({"_id":pid})
             self.render("post.html",post=post_info,user=user_info["username"]) 
         else:
             self.redirect("/login")
 
 class add_comment(RequestHandler):
      async def post(self,pid):
-         user_id = self.get_secure_cookie("blog_user")
+         user_id = int(self.get_secure_cookie("blog_user"))
          pid = int(pid)
          cmnt = self.get_body_argument("cmnt")
          post = db["web"]["post"]
          user = db["web"]["user"]
-         user_info = await user.find_one({"_id":int(user_id)})
-         await post.update_one({"id":pid},{"$push":{"comment":cmnt,"c_uid":user_info["username"]}})
+         user_info = await user.find_one({"_id":user_id})
+         await post.update_one({"_id":pid},{"$push":{"comment":cmnt,"c_uid":user_info["username"]}})
+         self.redirect(f"/get_post/{pid}")
 
 class like(RequestHandler):
     async def post(self,pid):
@@ -269,10 +277,15 @@ class like(RequestHandler):
             ld_uid = p_info["ld_uid"]
             if user_id in ld_uid:
                 if p_info["like"][ld_uid.index(user_id)]:
-                    p_info["like"][ld_uid.index(user_id)]=0
+                    await post.update_one({"_id":int(pid)},{"$set":{"like."+str(ld_uid.index(user_id)):0}})
                 else:
-                    p_info["like"][ld_uid.index(user_id)]=1
-                    p_info["dislike"][ld_uid.index(user_id)]=0
+                    await post.update_one({"_id":int(pid)},{"$set":{"like."+str(ld_uid.index(user_id)):1}})
+                    await post.update_one({"_id":int(pid)},{"$set":{"dislike."+str(ld_uid.index(user_id)):0}})
+            else:
+                await post.update_one({"_id":int(pid)},{"$push":{"ld_uid":user_id}})
+                await post.update_one({"_id":int(pid)},{"$push":{"like":1}})
+                await post.update_one({"_id":int(pid)},{"$push":{"dislike":0}})
+            self.redirect("/feed")
 
 class dislike(RequestHandler):
     async def post(self,pid):
@@ -283,10 +296,15 @@ class dislike(RequestHandler):
             ld_uid = p_info["ld_uid"]
             if user_id in ld_uid:
                 if p_info["dislike"][ld_uid.index(user_id)]:
-                    p_info["dislike"][ld_uid.index(user_id)]=0
+                    await post.update_one({"_id":int(pid)},{"$set":{"dislike."+str(ld_uid.index(user_id)):0}})
                 else:
-                    p_info["dislike"][ld_uid.index(user_id)]=1
-                    p_info["like"][ld_uid.index(user_id)]=0
+                    await post.update_one({"_id":int(pid)},{"$set":{"dislike."+str(ld_uid.index(user_id)):1}})
+                    await post.update_one({"_id":int(pid)},{"$set":{"like."+str(ld_uid.index(user_id)):0}})
+            else:
+                await post.update_one({"_id":int(pid)},{"$push":{"ld_uid":user_id}})
+                await post.update_one({"_id":int(pid)},{"$push":{"dislike":1}})
+                await post.update_one({"_id":int(pid)},{"$push":{"like":0}})
+            self.redirect("/feed")
 
 
 if __name__ == "__main__":
