@@ -312,7 +312,7 @@ class dislike(RequestHandler):
             self.redirect("/feed")
 
 
-if __name__ == "__main__":
+def main():
     app = Application([
             (r"/",home),
             (r"/login",login),
@@ -332,5 +332,8 @@ if __name__ == "__main__":
         cookie_secret="123123123123123",
         static_path="static",
         debug=True)
-    app.listen(8888)
+    app.listen(8888,"0.0.0.0")
     tornado.ioloop.IOLoop.current().start()
+                          
+if __name__ == "__main__":
+    main()
