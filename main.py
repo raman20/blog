@@ -149,7 +149,7 @@ class create_post(RequestHandler):
             post = db["web"]["post"]
             user_detail = await user.find_one({"_id":user_id})
             pid = await post.estimated_document_count()
-            blog = self.get_argument("blog")
+            blog = self.get_body_argument("blog")
             files = self.request.files.get("file")
             if files:
                 for f in files:
@@ -212,10 +212,10 @@ class edit_post(RequestHandler):
             pid = int(pid)
             pinfo = await post.find_one({"_id":pid})
             file_name = pinfo["file"]
-            blog = self.get_argument("blog")
+            blog = self.get_body_argument("blog")
             files = self.request.files.get("img")
-            if self.get_argument("del_img"):
-                del_img = self.get_argument("del_img")
+            if self.get_body_argument("del_img"):
+                del_img = self.get_body_argument("del_img")
             if files:
                 for f in files:
                     fh = open(f"static/{file_name}","wb")

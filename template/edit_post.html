@@ -56,7 +56,7 @@
       </style>
 </head>
 <body>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" action="/edit_post/{{pid}}" enctype="multipart/form-data">
         <ul>
          <li>EDIT POST</li>   
          <li>
@@ -69,7 +69,7 @@
           </li>
           <li>
             <label for="del_img">Delete pic</label>
-            <input type="checkbox" name="file" id='del_img' value="true">
+            <input type="checkbox" name="del_img" id='del_img' value="true">
          </li>
          <li class='button'>
            <button type='submit'>create post</button>
