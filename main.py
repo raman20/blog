@@ -331,7 +331,7 @@ def main():
         cookie_secret="123123123123123",
         static_path="static",
         debug=True)
-    app.listen(80)
+    app.listen(8888,"0.0.0.0")
     tornado.ioloop.IOLoop.current().start()
                           
 if __name__ == "__main__":
