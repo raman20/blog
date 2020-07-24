@@ -233,7 +233,7 @@ class delete_post(RequestHandler):
             post = db["web"]["post"]
             user = db["web"]["user"]
             await post.delete_one({"_id":int(pid)})
-            await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":pid}})
+            await user.update_one({"_id":int(self.get_secure_cookie("blog_user"))},{"$pull":{"pid":{"$in":[pid]}}})
             self.redirect("/user")
         else:
             self.redirect("/login")
