@@ -36,8 +36,8 @@
           <!--------------------------------------feed------------------------------------>
           <div class="w-100"></div>
           <div class="col-sm-12 text-center">
-              <h3>TRENDING POST</h3>
-            {% if trend_post %}
+	  {% if trend_post %}
+              <h3 class="text-muted">TRENDING POST</h3>
                 {% for i in trend_post %}
                     <a href="/get_post/{{i['_id']}}">
                         <div class="card" style="width: 18rem;">
@@ -56,14 +56,13 @@
                           </div>
                     </a>
                 {% end %}
-            {% else %}
-                <p>No Trending Post Available</p>
             {% end %}
+		<p>---------------------------------------------------------------------------------------</p>
         </div>
         <!--------normal post--------------->
         <div class="w-100"></div>
           <div class="col-sm-12 text-center">
-              <h3>POST</h3>
+              <h3 class="text-muted">POST</h3>
             {% if normal_post %}
                 {% for i in normal_post %}
                     <a href="/get_post/{{i['_id']}}">
@@ -78,7 +77,7 @@
                               <p class="card-text">{{i["blog"]}}</p>
                               <form action="/like/{{i['_id']}}" method="POST"><button type="submit">Like {{sum(i["like"])}}</button></form>
                               <form action="/dislike/{{i['_id']}}" method="POST"><button type="submit">Dislike {{sum(i["dislike"])}}</button></form>
-                              <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{sum(i["comment"])}}</span></a>
+                              <a href="/get_post/{{i['_id']}}" class="btn btn-light btn-sm text-muted">comments <span>{{len(i["comment"])}}</span></a>
                             </div>
                           </div>
                     </a>
