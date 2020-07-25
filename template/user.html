@@ -15,7 +15,7 @@
 		.img-wrap img{
             width: 24%;padding: 10px;border-radius:50%;box-shadow: 0 0 10px #999999
         }
-}
+
 .card {
   margin: 0 auto; /* Added */
         float: none; /* Added */
@@ -62,13 +62,15 @@
                             <a href="/user/edit" class="nav-link">Edit Profile</a>
                             <a href="/create_post" class="nav-link">Add Post</a>
                         </div>
+			<p>---------------------------------------------------------------</p>
                     </div>
                 </div>
             </div> 
     <!----------------------post----------------------------->        
             <div class="w-100"></div>
-            <div class="col-sm-12 text-center">
-                {% if post %}
+            <div class="col-sm-12 text-center" style="margin-top:10px">
+	        <h3 class="text-muted">All Posts</h3>        
+		{% if post %}
                     {% for i in post %}
                         <a href="/get_post/{{i['_id']}}">
                             <div class="card" style="width: 18rem;">
