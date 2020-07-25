@@ -113,6 +113,9 @@ class edit_user(RequestHandler):
         
 
 class feed(RequestHandler):
+    day = datetime.datetime.now().day
+    month = datetime.datetime.now().month
+    year = datetime.datetime.now().year
     async def get(self):
         if self.get_secure_cookie("blog_user"):
             trend_post = list()
@@ -332,7 +335,7 @@ def main():
         cookie_secret="123123123123123",
         static_path="static",
         debug=True)
-    app.listen(8888,'0.0.0.0')
+    app.listen(8888,"0.0.0.0")
     tornado.ioloop.IOLoop.current().start()
                           
 if __name__ == "__main__":
