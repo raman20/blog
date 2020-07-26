@@ -6,9 +6,6 @@ import datetime
 
 db = motor.MotorClient("mongodb://localhost:27017/")
 
-day = datetime.datetime.now().day
-month = datetime.datetime.now().month
-year = datetime.datetime.now().year
 
 class home(RequestHandler):
     def get(self):
@@ -113,9 +110,6 @@ class edit_user(RequestHandler):
         
 
 class feed(RequestHandler):
-    day = datetime.datetime.now().day
-    month = datetime.datetime.now().month
-    year = datetime.datetime.now().year
     async def get(self):
         if self.get_secure_cookie("blog_user"):
             trend_post = list()
@@ -123,7 +117,7 @@ class feed(RequestHandler):
             post = db["web"]["post"]
             post_info = post.find()
             for i in await post_info.to_list(length=100000):
-                if i["day"]==day and i["month"]==month and i["year"]==year:
+                if i["day"]==datetime.datetime.now().day and i["month"]==datetime.datetime.now().month and i["year"]==datetime.datetime.now().year:
                     if sum(i["like"])+sum(i["dislike"])+len(i["comment"]):
                         trend_post.append(i)
                     else:
@@ -168,9 +162,9 @@ class create_post(RequestHandler):
                     "ld_uid":[],
                     "comment":[],
                     "c_uid":[],
-                    "day":day,
-                    "month":month,
-                    "year":year
+                    "day":datetime.datetime.now().day,
+                    "month":datetime.datetime.now().month,
+                    "year":datetime.datetime.now().year
                     })
             else:
                 await post.insert_one({
@@ -182,9 +176,9 @@ class create_post(RequestHandler):
                     "dislike":[],
                     "comment":[],
                     "c_uid":[],
-                    "day":day,
-                    "month":month,
-                    "year":year
+                    "day":datetime.datetime.now().day,
+                    "month":datetime.datetime.now().month,
+                    "year":datetime.datetime.now().year
                     })
             await user.update_one({"_id":user_id},{
                 "$push":{
